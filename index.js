@@ -1,17 +1,34 @@
 // index.js
-const express = require('express')
-const app = express()
-const PORT = 4000
+const express = require("express");
+const sequelize = require("./config/database");
+const User = require("./models/User");
+const app = express();
+app.use(express.json());
 
 
-app.get('/home', (req, res) => {
-  res.status(200).json('Welcome, your app is working well');
-})
 
-
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+require("dotenv").config();
+app.get("/home", (req, res) => {
+  res.status(200).json("Welcome, your app is working well");
 });
+const userRoutes = require('./routes/userRoutes');
+app.use('/api', userRoutes);
 
-// Export the Express API
-module.exports = app
+
+const port = process.env.PORT || 3000;
+
+sequelize
+  .authenticate()
+  .then(() => {
+    return sequelize.sync();
+  })
+  .then(() => {
+    app.listen(port, () =>
+      console.log(`Server running on http://localhost:${port}`)
+    );
+  })
+  .catch((error) => {
+    console.log(error.message);
+  });
+
+module.exports = app;
