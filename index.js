@@ -30,5 +30,6 @@ sequelize
   .catch((error) => {
     console.log(error.message);
   });
+console.log('Database host:', process.env.DB_HOST);
 
 module.exports = app;
